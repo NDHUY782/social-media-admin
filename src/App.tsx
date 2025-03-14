@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import "./styles/sb-admin-2.css";
+import "./styles/sb-admin-2.min.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { PrivateRoute } from "./components";

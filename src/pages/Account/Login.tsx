@@ -1,6 +1,39 @@
-import React from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { AppState } from "../../store";
+import { useDispatch } from "react-redux";
+import { useLocation } from "react-router";
+import { login, logout } from "../../store/accounts/actions";
 
 export const Login = () => {
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const loading = useSelector<AppState>((state) => state.account.loading);
+
+  const { email, password } = inputs;
+  const dispatch = useDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    dispatch(logout() as any);
+  }, []);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setInputs((inputs) => ({ ...inputs, [name]: value }));
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitted(true);
+    if (email && password) {
+      dispatch(login(email, password) as any);
+    }
+  };
   return (
     <div className="container">
       {/* Outer Row */}
@@ -23,7 +56,9 @@ export const Login = () => {
                           className="form-control form-control-user"
                           id="exampleInputEmail"
                           aria-describedby="emailHelp"
+                          onChange={handleChange}
                           placeholder="Enter Email Address..."
+                          name="email"
                         />
                       </div>
                       <div className="form-group">
@@ -31,10 +66,12 @@ export const Login = () => {
                           type="password"
                           className="form-control form-control-user"
                           id="exampleInputPassword"
+                          onChange={handleChange}
                           placeholder="Password"
+                          name="password"
                         />
                       </div>
-                      <div className="form-group">
+                      {/* <div className="form-group">
                         <div className="custom-control custom-checkbox small">
                           <input
                             type="checkbox"
@@ -48,7 +85,7 @@ export const Login = () => {
                             Remember Me
                           </label>
                         </div>
-                      </div>
+                      </div> */}
                       <a
                         href="index.html"
                         className="btn btn-primary btn-user btn-block"
@@ -56,7 +93,7 @@ export const Login = () => {
                         Login
                       </a>
                       <hr />
-                      <a
+                      {/* <a
                         href="index.html"
                         className="btn btn-google btn-user btn-block"
                       >
@@ -68,7 +105,7 @@ export const Login = () => {
                       >
                         <i className="fab fa-facebook-f fa-fw" /> Login with
                         Facebook
-                      </a>
+                      </a> */}
                     </form>
                     <hr />
                     <div className="text-center">

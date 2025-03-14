@@ -4,8 +4,8 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
-import configureStore from "./store";
-const store = configureStore();
+import createStore from "./store";
+const store = createStore();
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
