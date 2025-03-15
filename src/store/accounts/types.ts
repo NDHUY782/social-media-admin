@@ -20,7 +20,9 @@ interface LogInRequest {
 interface LogInSuccess {
   type: typeof LOGIN_SUCCESS;
   payload: {
-    token: string;
+    data: {
+      token: string;
+    };
   };
 }
 interface LogInFailure {
@@ -40,7 +42,7 @@ export interface AccountState {
   token: string | null;
 }
 
-export type AccountActionType =
+export type AccountActionTypes =
   | LogInRequest
   | LogInSuccess
   | LogInFailure

@@ -1,30 +1,40 @@
 import { Dispatch } from "react";
 import {
-  AccountActionType,
+  AccountActionTypes,
   LOGIN_FAILURE,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGOUT,
 } from "./types";
 import { userService } from "../../services";
+import { history } from "../../helpers";
 
 export const login = (email: string, password: string) => {
-  return (dispatch: Dispatch<AccountActionType>) => {
+  return async (dispatch: Dispatch<AccountActionTypes>) => {
     dispatch({
       type: LOGIN_REQUEST,
-      payload: { email: email, password: password },
-    });
-    userService.login(email, password).then(
-      (res) => {
-        dispatch({ type: LOGIN_SUCCESS, payload: res });
+      payload: {
+        email: email,
+        password: password,
       },
-      (error) => {
-        dispatch({ type: LOGIN_FAILURE, payload: { error: error.toString() } });
-      }
-    );
+    });
+
+    try {
+      const response = await userService.login(email, password);
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: response,
+      });
+    } catch (error) {
+      dispatch({
+        type: LOGIN_FAILURE,
+        payload: { error: (error as Error).message },
+      });
+    }
   };
 };
-export const logout = (): AccountActionType => {
+
+export const logout = (): AccountActionTypes => {
   return {
     type: LOGOUT,
   };

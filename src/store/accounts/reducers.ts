@@ -1,5 +1,5 @@
 import {
-  AccountActionType,
+  AccountActionTypes,
   AccountState,
   LOGIN_FAILURE,
   LOGIN_REQUEST,
@@ -14,14 +14,14 @@ const initialState: AccountState = {
 };
 const accountReducer = (
   state: AccountState = initialState,
-  action: AccountActionType
+  action: AccountActionTypes
 ): AccountState => {
   switch (action.type) {
     case LOGIN_REQUEST: {
       return { ...state, loading: true };
     }
     case LOGIN_SUCCESS: {
-      return { ...state, token: action.payload.token, loading: false };
+      return { ...state, token: action.payload.data.token, loading: false };
     }
     case LOGIN_FAILURE: {
       return {

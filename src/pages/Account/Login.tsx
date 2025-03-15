@@ -1,9 +1,14 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
 import { AppState } from "../../store";
-import { useDispatch } from "react-redux";
+import { UrlConstants } from "../../constants/url-constants";
+import { history } from "../../helpers";
+import { login } from "../../store/accounts/actions";
+
+import { AppDispatch } from "../../store";
 import { useLocation } from "react-router";
-import { login, logout } from "../../store/accounts/actions";
+import { logout } from "../../store/accounts/actions";
 
 export const Login = () => {
   const [inputs, setInputs] = useState({
@@ -13,14 +18,16 @@ export const Login = () => {
   const [submitted, setSubmitted] = useState(false);
 
   const loading = useSelector<AppState>((state) => state.account.loading);
-
+  const token = useSelector<AppState>((state) => state.account);
   const { email, password } = inputs;
-  const dispatch = useDispatch();
-  const location = useLocation();
+
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(logout() as any);
-  }, []);
+    if (token) {
+      history.push(UrlConstants.HOME);
+    }
+  }, [dispatch, token]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,9 +38,10 @@ export const Login = () => {
     e.preventDefault();
     setSubmitted(true);
     if (email && password) {
-      dispatch(login(email, password) as any);
+      dispatch(login(email, password));
     }
   };
+
   return (
     <div className="container">
       {/* Outer Row */}
@@ -49,63 +57,62 @@ export const Login = () => {
                     <div className="text-center">
                       <h1 className="h4 text-gray-900 mb-4">Welcome Back!</h1>
                     </div>
-                    <form className="user">
+                    <form className="user" onSubmit={handleSubmit}>
                       <div className="form-group">
                         <input
                           type="email"
-                          className="form-control form-control-user"
+                          className={
+                            "form-control form-control-user " +
+                            (submitted && !email ? "is-invalid" : "")
+                          }
                           id="exampleInputEmail"
                           aria-describedby="emailHelp"
                           onChange={handleChange}
                           placeholder="Enter Email Address..."
                           name="email"
                         />
+                        {submitted && !email && (
+                          <div className="invalid-feedback">
+                            Email is required
+                          </div>
+                        )}
                       </div>
                       <div className="form-group">
                         <input
                           type="password"
-                          className="form-control form-control-user"
+                          className={
+                            "form-control form-control-user " +
+                            (submitted && !email ? "is-invalid" : "")
+                          }
                           id="exampleInputPassword"
-                          onChange={handleChange}
                           placeholder="Password"
+                          onChange={handleChange}
                           name="password"
                         />
+                        {submitted && !password && (
+                          <div className="invalid-feedback">
+                            Password is required
+                          </div>
+                        )}
                       </div>
-                      {/* <div className="form-group">
-                        <div className="custom-control custom-checkbox small">
-                          <input
-                            type="checkbox"
-                            className="custom-control-input"
-                            id="customCheck"
-                          />
-                          <label
-                            className="custom-control-label"
-                            htmlFor="customCheck"
-                          >
-                            Remember Me
-                          </label>
-                        </div>
-                      </div> */}
-                      <a
-                        href="index.html"
-                        className="btn btn-primary btn-user btn-block"
-                      >
-                        Login
-                      </a>
-                      <hr />
-                      {/* <a
-                        href="index.html"
-                        className="btn btn-google btn-user btn-block"
-                      >
-                        <i className="fab fa-google fa-fw" /> Login with Google
-                      </a>
-                      <a
-                        href="index.html"
-                        className="btn btn-facebook btn-user btn-block"
-                      >
-                        <i className="fab fa-facebook-f fa-fw" /> Login with
-                        Facebook
-                      </a> */}
+                      <div className="form-group">
+                        <button className="btn btn-primary">
+                          <button className="btn btn-primary">
+                            {loading ? (
+                              <>
+                                <span
+                                  className="spinner-border spinner-border-sm me-2"
+                                  role="status"
+                                  aria-hidden="true"
+                                ></span>
+                                Loading...
+                              </>
+                            ) : (
+                              "Login"
+                            )}
+                          </button>
+                        </button>
+                      </div>
                     </form>
                     <hr />
                     <div className="text-center">
@@ -128,3 +135,6 @@ export const Login = () => {
     </div>
   );
 };
+function useHistory() {
+  throw new Error("Function not implemented.");
+}

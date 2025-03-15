@@ -1,5 +1,4 @@
 import env from "react-dotenv";
-import { data } from "react-router";
 
 const login = (email: string, password: string) => {
   const requestOptions = {
@@ -7,7 +6,7 @@ const login = (email: string, password: string) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   };
-  return fetch(`${env.API_URl}/api/login`, requestOptions)
+  return fetch(`${env.API_URL}/api/users/login`, requestOptions)
     .then(handleResponse)
     .then((response) => {
       sessionStorage.setItem("user", JSON.stringify(response));
