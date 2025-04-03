@@ -10,7 +10,6 @@ import {
   LOGOUT,
 } from "./types";
 import { userService } from "../../services";
-import { history } from "../../helpers";
 
 export const login = (email: string, password: string) => {
   return async (dispatch: Dispatch<AccountActionTypes>) => {
