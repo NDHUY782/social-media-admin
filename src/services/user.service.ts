@@ -1,38 +1,84 @@
-import env from "react-dotenv";
+import { api, IPagination, setAuthToken } from "../helpers";
+import {
+  IAddUserRequest,
+  IUpdateUserRequest,
+  IUser,
+} from "../store/users/types";
 
-const login = (email: string, password: string) => {
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  };
-  return fetch(`${env.API_URL}/api/users/login`, requestOptions)
-    .then(handleResponse)
-    .then((response) => {
-      sessionStorage.setItem("user", JSON.stringify(response));
-      return response;
-    })
-    .catch((error) => console.error(error));
+const login = async (email: string, password: string) => {
+  const body = { email, password };
+  return await api.post("/users/admin-login", body).then((response) => {
+    sessionStorage.setItem("user", JSON.stringify(response.data));
+    setAuthToken(response.data.data.token);
+    return response.data;
+  });
 };
 
 const logout = () => {
   sessionStorage.removeItem("user");
 };
-const handleResponse = (response: any) => {
-  return response.text().then((text: string) => {
-    const data = text && JSON.parse(text);
-    if (!response.ok) {
-      if (response.status === 401) {
-        logout();
-      }
-      const error = (data && data.message) || response.statusText;
-      return Promise.reject(error);
-    }
-    return data;
+
+const getCurrentLoginUser = async (): Promise<any> => {
+  return await api.get<any>("/users/current-user").then((response) => {
+    return response.data;
   });
 };
 
+const getUsersPaging = async (
+  keyword: string,
+  currentPage: number
+): Promise<IPagination<IUser>> => {
+  const res = await api
+    .get<IPagination<IUser>>(
+      `users/paging-users/${currentPage}?keyword=${keyword}`
+    )
+    .then((response) => {
+      return response.data;
+    });
+
+  return res;
+};
+const getAdminsPaging = async (
+  keyword: string,
+  currentPage: number
+): Promise<IPagination<IUser>> => {
+  const res = await api
+    .get<IPagination<IUser>>(`users/paging/${currentPage}?keyword=${keyword}`)
+    .then((response) => {
+      return response.data;
+    });
+
+  return res;
+};
+
+const addAdminForSystem = async (user: IAddUserRequest): Promise<any> => {
+  const res = await api.post("/users/add-admin", user).then((response) => {
+    return response.data;
+  });
+  return res;
+};
+
+const updateAdmin = async (id: string, user: IUpdateUserRequest) => {
+  const res = await api
+    .put(`/users/update-admin/${id}`, user)
+    .then((response) => {
+      return response.data;
+    });
+  return res;
+};
+const getAdminById = async (id: string): Promise<IUser> => {
+  const res = await api.get<IUser>(`/users/admin/${id}`).then((response) => {
+    return response.data;
+  });
+  return res;
+};
 export const userService = {
   login,
+  getCurrentLoginUser,
   logout,
+  getAdminsPaging,
+  getUsersPaging,
+  addAdminForSystem,
+  updateAdmin,
+  getAdminById,
 };

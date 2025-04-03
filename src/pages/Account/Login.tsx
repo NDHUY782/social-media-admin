@@ -7,8 +7,6 @@ import { history } from "../../helpers";
 import { login } from "../../store/accounts/actions";
 
 import { AppDispatch } from "../../store";
-import { useLocation } from "react-router";
-import { logout } from "../../store/accounts/actions";
 
 export const Login = () => {
   const [inputs, setInputs] = useState({
@@ -18,7 +16,8 @@ export const Login = () => {
   const [submitted, setSubmitted] = useState(false);
 
   const loading = useSelector<AppState>((state) => state.account.loading);
-  const token = useSelector<AppState>((state) => state.account);
+  const token = useSelector<AppState>((state) => state.account.token);
+
   const { email, password } = inputs;
 
   const dispatch = useDispatch<AppDispatch>();
