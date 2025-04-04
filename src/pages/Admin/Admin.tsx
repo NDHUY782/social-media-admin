@@ -38,8 +38,8 @@ export const Admin = () => {
             )}
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/admins" element={<PageAdmin />} />
               <Route path="/users" element={<User />} />
+              <Route path="/admins" element={<PageAdmin />} />
               <Route path="/add-admins" element={<AddAdmin />} />
               <Route path="/edit-admin/:id" element={<EditAdmin />} />
             </Routes>

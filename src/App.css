@@ -41,3 +41,9 @@
   right: 10px;
   top: 8px;
 }
+.header-buttons .btn {
+  margin: 0.2rem;
+}
+.selected {
+  background-color: #a4a4a4;
+}

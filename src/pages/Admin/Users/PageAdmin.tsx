@@ -4,12 +4,10 @@ import { IUser } from "../../../store/users/types";
 import { useSelector } from "react-redux";
 import { AppDispatch, AppState } from "../../../store";
 import { useDispatch } from "react-redux";
-import {
-  loadAdminsPaging,
-  loadUsersPaging,
-} from "../../../store/users/actions";
+import { deleteAdmins, loadAdminsPaging } from "../../../store/users/actions";
 import { Pagination } from "../../../components";
 import { UrlConstants } from "../../../constants";
+import Swal from "sweetalert2";
 
 export const PageAdmin = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -20,7 +18,7 @@ export const PageAdmin = () => {
 
   const [searchKeyword, setSearchKeyword] = useState("");
   const [showSearch, setShowSearch] = useState(false);
-
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
   useEffect(() => {
     dispatch(loadAdminsPaging(searchKeyword, currentPage));
   }, [dispatch, currentPage, searchKeyword]);
@@ -39,9 +37,49 @@ export const PageAdmin = () => {
     dispatch(loadAdminsPaging("", 1));
   };
 
+  const handleSelectRow = (id: string) => {
+    let newSelectedItems = [...selectedItems];
+    selectedItems.indexOf(id) !== -1
+      ? (newSelectedItems = selectedItems.filter((item) => item !== id))
+      : newSelectedItems.push(id);
+    setSelectedItems(newSelectedItems);
+    console.log(newSelectedItems);
+  };
+  const handleDelete = () => {
+    if (selectedItems) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          dispatch(deleteAdmins(selectedItems));
+        }
+      });
+    }
+  };
+
   const userElement: React.ReactElement[] = users.map((user) => {
     return (
-      <tr key={`user_${user._id}`}>
+      <tr
+        key={`user_${user._id} `}
+        className={`table-row ${
+          selectedItems.indexOf(user._id) !== -1 ? "selected" : ""
+        }`}
+        onClick={() => handleSelectRow(user._id)}
+      >
+        <td>
+          <input
+            type="checkbox"
+            value={user._id}
+            onChange={() => handleSelectRow(user._id)}
+            checked={selectedItems.indexOf(user._id) !== -1}
+          />
+        </td>
         <td>{user.first_name}</td>
         <td>{user.last_name}</td>
         <td>{user.email}</td>
@@ -83,7 +121,7 @@ export const PageAdmin = () => {
                   <button
                     type="button"
                     onClick={() =>
-                      dispatch(loadUsersPaging(searchKeyword, currentPage))
+                      dispatch(loadAdminsPaging(searchKeyword, currentPage))
                     }
                     className="btn btn-primary my-1"
                   >
@@ -122,6 +160,22 @@ export const PageAdmin = () => {
           >
             <span className="fa fa-plus"></span> Add Admins
           </Link>
+          {selectedItems.length > 0 && (
+            <Fragment>
+              <button
+                className="btn btn-outline-danger btn-sm"
+                onClick={handleDelete}
+              >
+                <span className="fa fa-trash"></span> Xoá
+              </button>
+              <button
+                className="btn btn-outline-primary   btn-sm"
+                onClick={() => setSelectedItems([])}
+              >
+                <i className="fas fa-check"></i> Bỏ chọn
+              </button>
+            </Fragment>
+          )}
         </div>
 
         <div className="card-body">
@@ -134,6 +188,7 @@ export const PageAdmin = () => {
             >
               <thead>
                 <tr>
+                  <th></th>
                   <th>First Name</th>
                   <th>Last Name</th>
                   <th>Email</th>

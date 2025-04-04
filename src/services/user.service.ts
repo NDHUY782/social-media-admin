@@ -72,6 +72,21 @@ const getAdminById = async (id: string): Promise<IUser> => {
   });
   return res;
 };
+// const deleteAdmin = async (id: string) => {
+//   const res = await api.delete(`/users/delete-admin/${id}`).then((response) => {
+//     return response.data;
+//   });
+//   return res;
+// };
+const deleteAdmins = async (user_ids: string[]) => {
+  const res = await api
+    .delete("/users/delete-admins", { data: { user_ids } })
+    .then((response) => {
+      return response.data;
+    });
+  console.log(res);
+  return res;
+};
 export const userService = {
   login,
   getCurrentLoginUser,
@@ -81,4 +96,6 @@ export const userService = {
   addAdminForSystem,
   updateAdmin,
   getAdminById,
+  // deleteAdmin,
+  deleteAdmins,
 };
