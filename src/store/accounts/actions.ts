@@ -23,33 +23,12 @@ export const login = (email: string, password: string) => {
 
     try {
       const response = await userService.login(email, password);
-      //như này là đúng
-      // dispatch({
-      //   type: LOGIN_SUCCESS,
-      //   payload: response,
-      // });
 
-      // nhưng tôi làm cách 2 cho đúng hơn:
-      const { token, ...user } = response.data;
+      const { token, refreshToken, ...user } = response.data;
       dispatch({
         type: LOGIN_SUCCESS,
-        payload: { data: { token, user } },
+        payload: { data: { token, refreshToken, user } },
       });
-      // dispatch({
-      //   type: LOGIN_SUCCESS,
-      //   payload: {
-      //     data: {
-      //       token: response.data.token,
-      //       user: {
-      //         _id: response.data._id,
-      //         email: response.data.email,
-      //         first_name: response.data.first_name,
-      //         last_name: response.data.last_name,
-      //         avatar: response.data.image,
-      //       },
-      //     },
-      //   },
-      // });
     } catch (error) {
       dispatch({
         type: LOGIN_FAILURE,

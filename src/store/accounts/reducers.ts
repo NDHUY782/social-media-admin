@@ -8,12 +8,16 @@ import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGOUT,
+  REFRESH_TOKEN_FAILURE,
+  REFRESH_TOKEN_REQUEST,
+  REFRESH_TOKEN_SUCCESS,
 } from "./types";
 const initialState: AccountState = {
   data: { user: null },
   loading: false,
   error: null,
   token: null,
+  refreshToken: null,
 };
 const accountReducer = (
   state: AccountState = initialState,
@@ -28,6 +32,7 @@ const accountReducer = (
         ...state,
         data: { user: action.payload.data.user },
         token: action.payload.data.token,
+        refreshToken: action.payload.data.refreshToken,
         loading: false,
         error: null,
       };
@@ -64,7 +69,6 @@ const accountReducer = (
       return {
         ...state,
         data: { user: action.payload.data.user },
-        // token: action.payload.data.token,
         loading: false,
         error: null,
       };
@@ -79,6 +83,24 @@ const accountReducer = (
       // return newState;
     }
     case LOAD_CURRENT_LOGIN_USER_FAILURE: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload.error,
+      };
+    }
+    case REFRESH_TOKEN_REQUEST: {
+      return { ...state, loading: true };
+    }
+    case REFRESH_TOKEN_SUCCESS: {
+      return {
+        ...state,
+        loading: false,
+        token: action.payload.token,
+        refreshToken: action.payload.refreshToken,
+      };
+    }
+    case REFRESH_TOKEN_FAILURE: {
       return {
         ...state,
         loading: false,

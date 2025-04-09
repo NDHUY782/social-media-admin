@@ -25,7 +25,8 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, rootReducer as any);
 
-export type AppState = ReturnType<typeof rootReducer>;
+// export type AppState = ReturnType<typeof rootReducer>;
+export type AppState = ReturnType<typeof rootReducer> & PersistPartial;
 export type AppDispatch = typeof store.dispatch;
 
 export const store = configureStore({
@@ -50,11 +51,11 @@ export const store = configureStore({
 //   });
 // }
 
-let currentState = store.getState() as AppState | PersistPartial;
+let currentState = store.getState() as AppState;
 store.subscribe(() => {
   // keep track of the previous and current state to compare changes
   let previousState = currentState;
-  currentState = store.getState() as AppState | PersistPartial;
+  currentState = store.getState() as AppState;
 
   if (
     previousState &&
