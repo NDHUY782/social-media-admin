@@ -50,6 +50,8 @@ const accountReducer = (
       return {
         ...state,
         error: action.payload.error,
+        token: null,
+        refreshToken: null,
         loading: false,
       };
     }
@@ -104,6 +106,8 @@ const accountReducer = (
       return {
         ...state,
         loading: false,
+        token: null,
+        refreshToken: null,
         error: action.payload.error,
       };
     }

@@ -13,15 +13,51 @@ import { useSelector } from "react-redux";
 import { PageAdmin } from "./Users/PageAdmin";
 import { AddAdmin } from "./Users/AddAdmin";
 import { EditAdmin } from "./Users/EditAdmin";
+import { io } from "socket.io-client";
+import env from "react-dotenv";
+import { v4 as uuidv4 } from "uuid";
+import { addNotification } from "../../store/notifications/actions";
 
 export const Admin = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const alert = useSelector((state: AppState) => state.alert);
+  const userId = useSelector((state: AppState) => state.account.data.user?._id);
 
   useEffect(() => {
     dispatch(getCurrentLoginUser());
   }, [dispatch]);
+
+  useEffect(() => {
+    const socket = io(env.API_URL);
+
+    socket.on("connect", () => {
+      socket.emit("login", { userId });
+
+      socket.on("message", (message: any) => {
+        console.log(message);
+      });
+
+      socket.on("user_created", (message: any) => {
+        const id = uuidv4();
+        dispatch(addNotification(id, message));
+      });
+
+      socket.on("user_updated", (message: any) => {
+        const id = uuidv4();
+        dispatch(addNotification(id, message));
+      });
+
+      socket.on("user_deleted", (message: any) => {
+        const id = uuidv4();
+        dispatch(addNotification(id, message));
+      });
+    });
+
+    return () => {
+      socket.disconnect(); // cleanup socket
+    };
+  }, [userId, dispatch]); // ⚠️ phải có dependencies
   return (
     <Fragment>
       <LeftMenu />

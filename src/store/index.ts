@@ -9,6 +9,7 @@ import { setAuthToken } from "../helpers";
 import { PersistPartial } from "redux-persist/lib/persistReducer";
 import { usersReducer } from "./users/reducers";
 import { alertReducer } from "./alert/reducers";
+import { notificationReducer } from "./notifications/reducers";
 
 // Cấu hình persist
 const persistConfig = {
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   account: accountReducer,
   users: usersReducer,
   alert: alertReducer,
+  notification: notificationReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer as any);

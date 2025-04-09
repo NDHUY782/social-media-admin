@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { AppState } from "../../store";
 import { UrlConstants } from "../../constants/url-constants";
-import { history } from "../../helpers";
 import { login } from "../../store/accounts/actions";
 
 import { AppDispatch } from "../../store";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
   const [inputs, setInputs] = useState({
@@ -14,6 +14,8 @@ export const Login = () => {
     password: "",
   });
   const [submitted, setSubmitted] = useState(false);
+
+  const navigate = useNavigate();
 
   const loading = useSelector<AppState>((state) => state.account.loading);
   const token = useSelector<AppState>((state) => state.account.token);
@@ -24,9 +26,9 @@ export const Login = () => {
 
   useEffect(() => {
     if (token) {
-      history.push(UrlConstants.HOME);
+      navigate(UrlConstants.HOME);
     }
-  }, [dispatch, token]);
+  }, [token, navigate]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -134,6 +136,3 @@ export const Login = () => {
     </div>
   );
 };
-function useHistory() {
-  throw new Error("Function not implemented.");
-}

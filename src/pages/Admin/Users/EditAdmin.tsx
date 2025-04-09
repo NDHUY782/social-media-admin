@@ -21,32 +21,30 @@ export const EditAdmin = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const user = useSelector((state: AppState) => state.users.editUser);
-  console.log(useSelector((state: AppState) => state.users.editUser));
   useEffect(() => {
     dispatch(getAdminById(id as string));
   }, [dispatch, id]);
 
-  //   useEffect(() => {
-  //     setFormInputs({
-  //       first_name: user !== null ? user.first_name : "",
-  //       last_name: user !== null ? user.last_name : "",
-  //       email: user !== null ? user.email : "",
-  //       mobile: user !== null ? user.mobile : "",
-  //       role: user !== null ? user.role : "",
-  //     });
-  //   }, [user]);
   useEffect(() => {
-    console.log("User data received:", user?._id);
-    if (user) {
-      setFormInputs({
-        first_name: user.first_name || "",
-        last_name: user.last_name || "",
-        email: user.email || "",
-        mobile: user.mobile || "",
-        role: user.role || "",
-      });
-    }
+    setFormInputs({
+      first_name: user !== null ? user.first_name : "",
+      last_name: user !== null ? user.last_name : "",
+      email: user !== null ? user.email : "",
+      mobile: user !== null ? user.mobile : "",
+      role: user !== null ? user.role : "",
+    });
   }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     setFormInputs({
+  //       first_name: user.first_name || "",
+  //       last_name: user.last_name || "",
+  //       email: user.email || "",
+  //       mobile: user.mobile || "",
+  //       role: user.role || "",
+  //     });
+  //   }
+  // }, [user]);
   const [formInputs, setFormInputs] = useState({
     email: "",
     first_name: "",
