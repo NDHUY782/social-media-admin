@@ -10,6 +10,7 @@ import { PersistPartial } from "redux-persist/lib/persistReducer";
 import { usersReducer } from "./users/reducers";
 import { alertReducer } from "./alert/reducers";
 import { notificationReducer } from "./notifications/reducers";
+import { dashboardReducer } from "./dashboard/reducers";
 
 // Cấu hình persist
 const persistConfig = {
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   users: usersReducer,
   alert: alertReducer,
   notification: notificationReducer,
+  dashboard: dashboardReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer as any);

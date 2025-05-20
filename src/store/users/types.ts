@@ -20,6 +20,16 @@ export const DELETE_USERS_REQUEST = "DELETE_USERS_REQUEST";
 export const DELETE_USERS_SUCCESS = "DELETE_USERS_SUCCESS";
 export const DELETE_USERS_FAILURE = "DELETE_USERS_FAILURE";
 
+export const REPORT_USER_REQUEST = "REPORT_USER_REQUEST";
+export const REPORT_USER_SUCCESS = "REPORT_USER_SUCCESS";
+export const REPORT_USER_FAILURE = "REPORT_USER_FAILURE";
+
+export const LOAD_REPORTED_USERS_REQUEST = "LOAD_REPORTED_USERS_REQUEST";
+export const LOAD_REPORTED_USERS_SUCCESS = "LOAD_REPORTED_USERS_SUCCESS";
+export const LOAD_REPORTED_USERS_FAILURE = "LOAD_REPORTED_USERS_FAILURE";
+
+export const BAN_USER_SUCCESS = "BAN_USER_SUCCESS";
+export const UNBAN_USER_SUCCESS = "UNBAN_USER_SUCCESS";
 export interface IUser {
   _id: string;
   first_name: string;
@@ -44,6 +54,32 @@ export interface IUpdateUserRequest {
   email: string;
   mobile: string;
   role: string;
+}
+
+export interface IReportedUser extends IUser {
+  reports: {
+    reporter_id: {
+      _id: string;
+      first_name: string;
+      last_name: string;
+      email: string;
+    };
+    reason: string;
+  }[];
+  is_verified: number;
+}
+
+interface ReportUserRequest {
+  type: typeof REPORT_USER_REQUEST;
+}
+interface ReportUserSuccess {
+  type: typeof REPORT_USER_SUCCESS;
+}
+interface ReportUserFailure {
+  type: typeof REPORT_USER_FAILURE;
+  payload: {
+    error: string;
+  };
 }
 
 interface LoadUsersPagingRequest {
@@ -124,6 +160,30 @@ interface DeleteUsersFailure {
   };
 }
 
+interface LoadReportedUsersRequest {
+  type: typeof LOAD_REPORTED_USERS_REQUEST;
+}
+interface LoadReportedUsersSuccess {
+  type: typeof LOAD_REPORTED_USERS_SUCCESS;
+  payload: IReportedUser[];
+}
+interface LoadReportedUsersFailure {
+  type: typeof LOAD_REPORTED_USERS_FAILURE;
+  payload: {
+    error: string;
+  };
+}
+
+interface BanUserSuccess {
+  type: typeof BAN_USER_SUCCESS;
+  payload: string; // user_id
+}
+
+interface UnbanUserSuccess {
+  type: typeof UNBAN_USER_SUCCESS;
+  payload: string; // user_id
+}
+
 export interface UsersState {
   items: IUser[];
   page: number;
@@ -133,6 +193,7 @@ export interface UsersState {
   deletedCount: number;
   error: string | null;
   editUser: IUser | null;
+  reportedUsers: IReportedUser[];
 }
 
 export type UsersActionTypes =
@@ -152,4 +213,12 @@ export type UsersActionTypes =
   | UpdateUserFailure
   | DeleteUsersRequest
   | DeleteUsersSuccess
-  | DeleteUsersFailure;
+  | DeleteUsersFailure
+  | ReportUserRequest
+  | ReportUserSuccess
+  | ReportUserFailure
+  | LoadReportedUsersRequest
+  | LoadReportedUsersSuccess
+  | LoadReportedUsersFailure
+  | BanUserSuccess
+  | UnbanUserSuccess;

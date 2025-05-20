@@ -17,6 +17,8 @@ import { io } from "socket.io-client";
 import env from "react-dotenv";
 import { v4 as uuidv4 } from "uuid";
 import { addNotification } from "../../store/notifications/actions";
+import AdminDashboard from "./ManagerAdmin/ManagerAdmin";
+import ManagerAdmin from "./ManagerAdmin/ManagerAdmin";
 
 export const Admin = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -55,9 +57,9 @@ export const Admin = () => {
     });
 
     return () => {
-      socket.disconnect(); // cleanup socket
+      socket.disconnect();
     };
-  }, [userId, dispatch]); // ⚠️ phải có dependencies
+  }, [userId, dispatch]);
   return (
     <Fragment>
       <LeftMenu />
@@ -78,6 +80,7 @@ export const Admin = () => {
               <Route path="/admins" element={<PageAdmin />} />
               <Route path="/add-admins" element={<AddAdmin />} />
               <Route path="/edit-admin/:id" element={<EditAdmin />} />
+              <Route path="/admin/reported-users" element={<ManagerAdmin />} />
             </Routes>
           </div>
           {/* /.container-fluid */}

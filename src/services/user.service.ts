@@ -1,6 +1,7 @@
 import { api, IPagination, setAuthToken } from "../helpers";
 import {
   IAddUserRequest,
+  IReportedUser,
   IUpdateUserRequest,
   IUser,
 } from "../store/users/types";
@@ -87,6 +88,38 @@ const deleteAdmins = async (user_ids: string[]) => {
   console.log(res);
   return res;
 };
+// Report user
+const reportUser = async (user_id: string, reason: string) => {
+  const res = await api
+    .post(`/users/report/${user_id}`, { reason })
+    .then((response) => response.data);
+  return res;
+};
+
+// Get all reported users
+const getReportedUsers = async (): Promise<IReportedUser[]> => {
+  const res = await api
+    .get(`/users/admin/reported-users`)
+    .then((response) => response.data.data);
+  return res;
+};
+
+// Ban a user
+const banUser = async (user_id: string): Promise<any> => {
+  const res = await api
+    .patch(`/users/ban/${user_id}`)
+    .then((response) => response.data);
+  return res;
+};
+
+// Unban a user
+const unbanUser = async (user_id: string): Promise<any> => {
+  const res = await api
+    .patch(`/users/unban/${user_id}`)
+    .then((response) => response.data);
+  return res;
+};
+
 export const userService = {
   login,
   getCurrentLoginUser,
@@ -98,4 +131,8 @@ export const userService = {
   getAdminById,
   // deleteAdmin,
   deleteAdmins,
+  reportUser,
+  getReportedUsers,
+  banUser,
+  unbanUser,
 };

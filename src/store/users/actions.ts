@@ -2,6 +2,7 @@ import {
   ADD_USER_FAILURE,
   ADD_USER_REQUEST,
   ADD_USER_SUCCESS,
+  BAN_USER_SUCCESS,
   DELETE_USERS_FAILURE,
   DELETE_USERS_REQUEST,
   DELETE_USERS_SUCCESS,
@@ -10,9 +11,16 @@ import {
   GET_USER_BY_ID_SUCCESS,
   IAddUserRequest,
   IUpdateUserRequest,
+  LOAD_REPORTED_USERS_FAILURE,
+  LOAD_REPORTED_USERS_REQUEST,
+  LOAD_REPORTED_USERS_SUCCESS,
   LOAD_USERS_PAGING_FAILURE,
   LOAD_USERS_PAGING_REQUEST,
   LOAD_USERS_PAGING_SUCCESS,
+  REPORT_USER_FAILURE,
+  REPORT_USER_REQUEST,
+  REPORT_USER_SUCCESS,
+  UNBAN_USER_SUCCESS,
   UPDATE_USER_FAILURE,
   UPDATE_USER_REQUEST,
   UPDATE_USER_SUCCESS,
@@ -171,5 +179,49 @@ export const deleteAdmins = (user_ids: string[]) => {
         payload: { error: (error as Error).message },
       });
     }
+  };
+};
+
+export const reportUser = (userId: string, reason: string) => {
+  return async (dispatch: Dispatch<UsersActionTypes>) => {
+    try {
+      dispatch({ type: REPORT_USER_REQUEST });
+      await userService.reportUser(userId, reason);
+      dispatch({ type: REPORT_USER_SUCCESS });
+    } catch (error) {
+      dispatch({
+        type: REPORT_USER_FAILURE,
+        payload: { error: (error as Error).message },
+      });
+    }
+  };
+};
+
+export const loadReportedUsers = () => {
+  return async (dispatch: Dispatch<UsersActionTypes>) => {
+    try {
+      dispatch({ type: LOAD_REPORTED_USERS_REQUEST });
+      const users = await userService.getReportedUsers();
+      dispatch({ type: LOAD_REPORTED_USERS_SUCCESS, payload: users });
+    } catch (error) {
+      dispatch({
+        type: LOAD_REPORTED_USERS_FAILURE,
+        payload: { error: (error as Error).message },
+      });
+    }
+  };
+};
+
+export const banUser = (userId: string) => {
+  return async (dispatch: Dispatch<UsersActionTypes>) => {
+    await userService.banUser(userId);
+    dispatch({ type: BAN_USER_SUCCESS, payload: userId });
+  };
+};
+
+export const unbanUser = (userId: string) => {
+  return async (dispatch: Dispatch<UsersActionTypes>) => {
+    await userService.unbanUser(userId);
+    dispatch({ type: UNBAN_USER_SUCCESS, payload: userId });
   };
 };
